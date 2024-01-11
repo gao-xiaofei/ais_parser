@@ -1,12 +1,11 @@
 cmake_minimum_required (VERSION 3.22)
-# 项目信息
 project(ais)
 
 include_directories(./include/ )
 
-# 查找当前目录下的所有源文件,并将名称保存到 DIR_LIB_SRCS 变量
 aux_source_directory(./src/ DIR_LIB_SRCS)
-#aux_source_directory(./include/ DIR_LIB_INCLUDE)
 
-# 生成链接库
 add_library (aisparser ${DIR_LIB_SRCS})
+
+add_executable(parser_vdm_test ./test/parser_vdm_test.c)
+target_link_libraries(parser_vdm_test aisparser)
