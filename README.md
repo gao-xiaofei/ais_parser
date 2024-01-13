@@ -1,1 +1,1 @@
-- 源代码见 `bcl/aisparser`
+- 修改自 `bcl/aisparser`

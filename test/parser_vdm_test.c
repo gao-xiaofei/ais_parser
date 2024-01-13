@@ -11,7 +11,7 @@
 #include "sixbit.h"
 #include "vdm_parse.h"
 
-char *buf[255] = {
+const char *buf[255] = {
     "!AIVDM,1,1,,B,19NS7Sp02wo?HETKA2K6mUM20<L=,0*27\r\n",
     "!AIVDM,2,1,9,A,55Mf@6P00001MUS;7GQL4hh61L4hh6222222220t41H,0*49\r\n",
     "!AIVDM,2,2,9,A,==40HtI4i@E531H1QDTVH51DSCS0,2*16\r\n",
@@ -56,17 +56,17 @@ int main(void) {
     usleep(1000 * 1000);
     aline = buf[i++];
     if (i > 11) i = 0;
-
+    printf("/*------------------ parser start -------------------------*/\n");
     printf("read:%s\n", aline);
 
     if ((err = assemble_vdm(&ais, aline)) != 0) {
-      printf("ERROR %d\n", err);
+      printf("parser error %d\n", err);
       continue;
     }
     ais.msgid = (unsigned char)get_6bit(&ais.six_state, 6);
 
     /* Process the AIS message */
-    printf("msgid       : %d\n", ais.msgid);
+    printf("msgid : %d\n", ais.msgid);
 
     /* process message with appropriate parser */
     switch (ais.msgid) {
@@ -78,8 +78,8 @@ int main(void) {
           printf("rot         : %d\n", msg_1.rot);
           printf("sog         : %d\n", msg_1.sog);
           printf("pos_acc     : %d\n", msg_1.pos_acc);
-          printf("longitude   : %lf\n", (double)msg_1.longitude / 600000);
-          printf("latitude    : %lf\n", (double)msg_1.latitude / 600000);
+          printf("longitude   : %lf\n", (double)msg_1.longitude / 600000.0);
+          printf("latitude    : %lf\n", (double)msg_1.latitude / 600000.0);
           printf("cog         : %d\n", msg_1.cog);
           printf("true        : %d\n", msg_1._true);
           printf("utc_sec     : %d\n", msg_1.utc_sec);
@@ -91,6 +91,8 @@ int main(void) {
           printf("sub_message : %d\n", msg_1.sub_message);
         }
         break;
+      case 2:
+        break;
       case 3:
         if (parse_ais_3(&ais, &msg_3) == 0) {
           printf("repeat      : %d\n", msg_3.repeat);
@@ -99,8 +101,8 @@ int main(void) {
           printf("rot         : %d\n", msg_3.rot);
           printf("sog         : %d\n", msg_3.sog);
           printf("pos_acc     : %d\n", msg_3.pos_acc);
-          printf("longitude   : %lf\n", (double)msg_3.longitude / 600000);
-          printf("latitude    : %lf\n", (double)msg_3.latitude / 600000);
+          printf("longitude   : %lf\n", (double)msg_3.longitude / 600000.0);
+          printf("latitude    : %lf\n", (double)msg_3.latitude / 600000.0);
           printf("cog         : %d\n", msg_3.cog);
           printf("true        : %d\n", msg_3._true);
           printf("utc_sec     : %d\n", msg_3.utc_sec);
@@ -113,6 +115,11 @@ int main(void) {
           printf("keep        : %d\n", msg_3.keep);
         }
 
+        break;
+      case 4:
+        break;
+        // ......
+      default:
         break;
     }
     printf("\n");
